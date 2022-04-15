@@ -1,11 +1,11 @@
-const baseURL = `http://localhost:4000/api/`;
+const baseURL = `http://localhost:4000/api/fortunelist`;
 
 const errCallback = (err) => console.log(err.response.data);
 const fortuneCallback = ({ data: fortuneArr }) => displayFortunes(fortuneArr);
 
 document.getElementById('complimentButton').onclick = function () {
   axios
-    .get(baseURL + `compliment`)
+    .get(`http://localhost:4000/api/compliment`)
     .then(function (response) {
       const data = response.data;
       alert(data);
@@ -15,7 +15,7 @@ document.getElementById('complimentButton').onclick = function () {
 
 document.getElementById('fortuneButton').onclick = () => {
   axios
-    .get(baseURL + `fortune`)
+    .get(`http://localhost:4000/api/fortune`)
     .then(function (res) {
       const data = res.data;
       alert(data);
@@ -32,19 +32,13 @@ document.getElementById('addFortune').onsubmit = (evt) => {
     text: newFortune.value,
   };
 
-  axios
-    .post(baseURL + 'fortunelist', body)
-    .then(fortuneCallback)
-    .catch(errCallback);
+  axios.post(baseURL, body).then(fortuneCallback).catch(errCallback);
 
   newFortune.value = '';
 };
 
 document.getElementById('allFortunes').onclick = () => {
-  axios
-    .get(baseURL + `fortunelist`)
-    .then(fortuneCallback)
-    .catch(errCallback);
+  axios.get(baseURL).then(fortuneCallback).catch(errCallback);
 };
 
 const fortuneContainer = document.getElementById('fortuneContainer');
@@ -61,11 +55,8 @@ const displayFortunes = (fortuneArr) => {
 document.getElementById('removeFortune').onsubmit = (evt) => {
   evt.preventDefault();
   let deadFortune = document.querySelector('#deadFortune').value;
-  //   console.log(deadFortune);
-  axios
-    .delete(baseURL + `fortunelist/${deadFortune}`)
-    .then(fortuneCallback)
-    .catch(errCallback);
+  axios.delete(`${baseURL}/${deadFortune}`).then(fortuneCallback).catch(errCallback);
+  document.querySelector('#deadFortune').value = '';
 };
 
 document.getElementById('replaceFortune').onsubmit = (evt) => {
@@ -78,8 +69,8 @@ document.getElementById('replaceFortune').onsubmit = (evt) => {
   };
 
   let param = document.querySelector('#changeFortuneID').value;
-  axios
-    .put(baseURL + `fortunelist/${param}`, body)
-    .then(fortuneCallback)
-    .catch(errCallback);
+  axios.put(`${baseURL}/${param}`, body).then(fortuneCallback).catch(errCallback);
+
+  newFortune.value = '';
+  document.body.querySelector('#changeFortuneID').value = '';
 };
